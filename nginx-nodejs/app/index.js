@@ -13,23 +13,14 @@ const dbConfig = {
 
 let pool;
 
-async function initDb(retries = 10, delay = 2000) {
-    for (let i = 0; i < retries; i++) {
-        try {
-            pool = await mysql.createPool(dbConfig);
-            await pool.query(`
-                CREATE TABLE IF NOT EXISTS people (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    name VARCHAR(255) NOT NULL
-                )
-            `);
-            return;
-        } catch (error) {
-            if (i < retries - 1) {
-                await new Promise(res => setTimeout(res, delay));
-            }
-        }
-    }
+async function initDb() {
+    pool = await mysql.createPool(dbConfig);
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS people (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL
+        )
+    `);
 }
 
 app.get('/', async (req, res) => {
